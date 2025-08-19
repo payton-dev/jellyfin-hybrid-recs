@@ -1,6 +1,14 @@
-bin/
-obj/
+# Ignore local nuget config with token
+nuget.config
+
+# Build artifacts
+/build/
+/bin/
+/obj/
+
+# IDE files
+.vscode/
 *.user
 *.suo
-*.zip
-/dist
+*.swp
+*.DS_Store
