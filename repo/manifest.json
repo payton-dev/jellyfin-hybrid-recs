@@ -1,0 +1,17 @@
+{
+  "name": "Hybrid Recommendations",
+  "guid": "12345678-abcd-ef00-9876-1234567890ab",
+  "overview": "Hybrid content recommendations and trending feeds for Jellyfin",
+  "owner": "payton-dev",
+  "category": "Recommendations",
+  "versions": [
+    {
+      "version": "0.1.0",
+      "changelog": "Initial release with advanced admin controls and UI",
+      "targetAbi": "10.8.0.0",
+      "sourceUrl": "",
+      "checksum": "",
+      "timestamp": ""
+    }
+  ]
+}

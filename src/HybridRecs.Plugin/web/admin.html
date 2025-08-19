@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Hybrid Recommendations Settings</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h2 { cursor: pointer; margin: 10px 0; }
+    .panel { border: 1px solid #ccc; border-radius: 8px; margin-bottom: 15px; padding: 10px; }
+    .content { display: none; padding-top: 10px; }
+    .toggle { display: flex; align-items: center; margin-bottom: 8px; }
+    .slider-container { margin: 10px 0; }
+    .slider-value { font-size: 12px; margin-top: 2px; }
+  </style>
+</head>
+<body>
+  <h1>Hybrid Recommendations — Settings</h1>
+
+  <div class="panel">
+    <h2 onclick="togglePanel(this)">General Settings</h2>
+    <div class="content">
+      <div class="toggle"><label><input type="checkbox" id="EnableSeasonalMode"> Enable Seasonal Mode</label></div>
+      <div class="slider-container">
+        Continue Watching Priority
+        <input type="range" min="0" max="100" id="ContinueWatchingPriority">
+        <div class="slider-value" id="ContinueWatchingPriorityValue"></div>
+      </div>
+      <div class="slider-container">
+        Recently Added Boost
+        <input type="range" min="0" max="100" id="RecentlyAddedBoost">
+        <div class="slider-value" id="RecentlyAddedBoostValue"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 onclick="togglePanel(this)">External Data Enhancers</h2>
+    <div class="content">
+      <label>TMDb API Key: <input type="text" id="TmdbApiKey"></label><br>
+      <label>Trakt API Key: <input type="text" id="TraktApiKey"></label><br>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 onclick="togglePanel(this)">Admin Controls</h2>
+    <div class="content">
+      <div class="toggle"><label><input type="checkbox" id="EnableParentalControls"> Enable Parental Controls</label></div>
+      <div class="toggle"><label><input type="checkbox" id="EnableRewatchSuggestions"> Rewatch Suggestions</label></div>
+      <div class="toggle"><label><input type="checkbox" id="EnableSkipShorts"> Skip Shorts</label></div>
+    </div>
+  </div>
+
+  <button onclick="saveConfig()">Save</button>
+
+  <script>
+    function togglePanel(h2) {
+      var content = h2.nextElementSibling;
+      content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+    }
+
+    document.querySelectorAll('input[type=range]').forEach(slider => {
+      const valueDisplay = document.getElementById(slider.id + 'Value');
+      const updateValue = () => valueDisplay.innerText = slider.value;
+      slider.addEventListener('input', updateValue);
+      updateValue();
+    });
+
+    function saveConfig() {
+      const config = {
+        EnableSeasonalMode: document.getElementById('EnableSeasonalMode').checked,
+        ContinueWatchingPriority: parseInt(document.getElementById('ContinueWatchingPriority').value),
+        RecentlyAddedBoost: parseInt(document.getElementById('RecentlyAddedBoost').value),
+        TmdbApiKey: document.getElementById('TmdbApiKey').value,
+        TraktApiKey: document.getElementById('TraktApiKey').value,
+        EnableParentalControls: document.getElementById('EnableParentalControls').checked,
+        EnableRewatchSuggestions: document.getElementById('EnableRewatchSuggestions').checked,
+        EnableSkipShorts: document.getElementById('EnableSkipShorts').checked,
+      };
+      alert('Config would be saved: ' + JSON.stringify(config, null, 2));
+    }
+  </script>
+</body>
+</html>
