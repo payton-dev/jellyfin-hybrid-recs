@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Hybrid Recommendations</title>
+  <style>
+    body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto; margin: 24px; }
+    .card { border: 1px solid #ddd; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    label { display:block; margin: 8px 0 4px; font-weight: 600; }
+    input[type="number"] { width: 120px; }
+    .row { display:flex; flex-wrap: wrap; gap: 24px; }
+    .col { flex: 1 1 260px; }
+    button { padding: 10px 14px; border-radius: 10px; border: 1px solid #ccc; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Hybrid Recommendations</h1>
+  <p>Configure weights, toggles, and seasonal mode.</p>
+
+  <div class="card">
+    <h2>Feature Toggles</h2>
+    <div class="row">
+      <div class="col">
+        <label><input type="checkbox" id="EnableAdvancedSuggestions"> Advanced Suggestions</label>
+        <label><input type="checkbox" id="EnableTrendingFeeds"> Trending Feeds</label>
+        <label><input type="checkbox" id="EnableSeasonalMode"> Seasonal Mode</label>
+        <label><input type="checkbox" id="EnableLocalEmbeddings"> Local Embeddings (ML)</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Weights</h2>
+    <div class="row">
+      <div class="col">
+        <label>New Release Weight</label>
+        <input type="number" step="0.05" min="0" max="2" id="NewReleaseWeight">
+      </div>
+      <div class="col">
+        <label>Continue Watching Weight</label>
+        <input type="number" step="0.05" min="0" max="2" id="ContinueWatchingWeight">
+      </div>
+      <div class="col">
+        <label>Friend Activity Weight</label>
+        <input type="number" step="0.05" min="0" max="2" id="FriendActivityWeight">
+      </div>
+      <div class="col">
+        <label>Similar Taste Weight</label>
+        <input type="number" step="0.05" min="0" max="2" id="SimilarTasteWeight">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Seasonal</h2>
+    <label>Tags (comma-separated)</label>
+    <input type="text" id="SeasonalTags">
+    <label>Window Days</label>
+    <input type="number" min="1" max="120" id="SeasonalWindowDays">
+  </div>
+
+  <div>
+    <button id="saveBtn">Save</button>
+  </div>
+
+  <script>
+    // Jellyfin admin pages load config via global AppSettingsManager. This is a minimal placeholder.
+    async function loadConfig() {{
+      // In real plugin, fetch from /web/Configuration or a provided API.
+      return fetch('/web/Configuration/HybridRecs.Plugin').then(r => r.json());
+    }}
+    async function saveConfig(cfg) {{
+      return fetch('/web/Configuration/HybridRecs.Plugin', {{ method: 'POST', headers: {{'Content-Type': 'application/json'}}, body: JSON.stringify(cfg) }});
+    }}
+
+    function fill(cfg) {{
+      for (const k of Object.keys(cfg)) {{
+        const el = document.getElementById(k);
+        if (!el) continue;
+        if (el.type === 'checkbox') el.checked = !!cfg[k]; else el.value = cfg[k];
+      }}
+    }}
+
+    function read() {{
+      const ids = ['EnableAdvancedSuggestions','EnableTrendingFeeds','EnableSeasonalMode','EnableLocalEmbeddings',
+                   'NewReleaseWeight','ContinueWatchingWeight','FriendActivityWeight','SimilarTasteWeight',
+                   'SeasonalTags','SeasonalWindowDays'];
+      const cfg = {{}}
+      for (const id of ids) {{
+        const el = document.getElementById(id);
+        if (!el) continue;
+        cfg[id] = (el.type === 'checkbox') ? !!el.checked : (id === 'SeasonalTags' ? el.value.split(',').map(s => s.trim()).filter(Boolean) : Number(el.value));
+      }}
+      return cfg;
+    }}
+
+    loadConfig().then(cfg => fill(cfg)).catch(() => {{
+      // fallback defaults
+      fill({{
+        EnableAdvancedSuggestions: true,
+        EnableTrendingFeeds: true,
+        EnableSeasonalMode: true,
+        EnableLocalEmbeddings: false,
+        NewReleaseWeight: 0.6,
+        ContinueWatchingWeight: 0.8,
+        FriendActivityWeight: 0.5,
+        SimilarTasteWeight: 0.7,
+        SeasonalTags: ['Halloween','Holiday','Summer','Awards'],
+        SeasonalWindowDays: 45
+      }});
+    }});
+
+    document.getElementById('saveBtn').addEventListener('click', async () => {{
+      const cfg = read();
+      await saveConfig(cfg);
+      alert('Saved!');
+    }});
+  </script>
+</body>
+</html>

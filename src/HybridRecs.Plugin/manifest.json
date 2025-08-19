@@ -1,0 +1,18 @@
+{
+  "guid": "9c3f9f7b-8e1e-4a8e-8f2d-71b7a5a7d3c0",
+  "name": "Hybrid Recommendations",
+  "description": "Hybrid recommendations (advanced suggestions + trending feeds + seasonal).",
+  "overview": "Advanced suggestions, trending feeds, seasonal picks, admin weights + toggles.",
+  "owner": "you",
+  "category": "General",
+  "versions": [
+    {
+      "version": "0.1.0",
+      "changelog": "Initial pre-release",
+      "targetAbi": "10.9.0.0",
+      "sourceUrl": "REPLACED_BY_CI",
+      "checksum": "REPLACED_BY_CI",
+      "timestamp": "2025-08-19T06:07:53Z"
+    }
+  ]
+}
